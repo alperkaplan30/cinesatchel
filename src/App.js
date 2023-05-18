@@ -1,6 +1,4 @@
-import { Route, Routes, BrowserRouter as Router,
-  Switch,
-  Link } from "react-router-dom";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import "./index.scss"
 import Home from "./pages/home/Home";
 import Welcome from "./pages/welcome/Welcome";
