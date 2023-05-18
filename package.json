@@ -43,7 +43,4 @@
       "last 1 safari version"
     ]
   }
-  "overrides": {
-   "webpack":"5.82.1"
-  },
 }
