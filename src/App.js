@@ -18,7 +18,6 @@ export function App() {
       <Route path="/browse/movies" element={<Movies />} />
       <Route path="/browse/series" element={<Series />} />
       <Route path="/browse/myLists" element={<MyLists />} />
-      <Route path="/browse/myLists/listName" element={<Home />} />
       <Route path="/player" element={<Player />} />
       <Route path="/adminPanel" element={<AdminPanel />} />
       <Route path="/adminPanel/videos" element={<Videos />} />
