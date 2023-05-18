@@ -14,17 +14,19 @@ import Player from "./pages/player/Player";
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Welcome />} />
-      <Route path="/browse" element={<Home />} />
-      <Route path="/browse/movies" element={<Movies />} />
-      <Route path="/browse/series" element={<Series />} />
-      <Route path="/browse/myLists" element={<MyLists />} />
-      <Route path="/player" element={<Player />} />
-      <Route path="/adminPanel" element={<AdminPanel />} />
-      <Route path="/adminPanel/videos" element={<Videos />} />
-      <Route path="/adminPanel/addVideo" element={<AddVideo />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/browse" element={<Home />} />
+        <Route path="/browse/movies" element={<Movies />} />
+        <Route path="/browse/series" element={<Series />} />
+        <Route path="/browse/myLists" element={<MyLists />} />
+        <Route path="/player" element={<Player />} />
+        <Route path="/adminPanel" element={<AdminPanel />} />
+        <Route path="/adminPanel/videos" element={<Videos />} />
+        <Route path="/adminPanel/addVideo" element={<AddVideo />} />
+      </Routes>
+    </Router>
   )
 }
 
