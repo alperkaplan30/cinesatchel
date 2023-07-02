@@ -4,7 +4,7 @@ module.exports = function(app) {
     app.use(
       "/api",
       createProxyMiddleware({
-        target: "https://cinesatchel-deneme-api.vercel.app/",
+        target: "http://localhost:3001",
         changeOrigin: true,
       })
     );
