@@ -52,5 +52,6 @@
       "last 1 safari version"
     ],
     "proxy": "cinesatchel-deneme-api.vercel.app"
+    "homepage": "."
   }
 }
