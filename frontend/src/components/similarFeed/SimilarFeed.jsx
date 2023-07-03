@@ -10,7 +10,7 @@ export default function SimilarFeed({ current }) {
     useEffect(() => {
         const getSimilars = async () => {
           try {
-            const res = await axios.get(`api/videos/find/${id}/similars`)
+            const res = await axios.get(process.env.REACT_APP_API_KEY + `api/videos/find/${id}/similars`)
             //console.log(res)
             setSimilars(res.data);
           } catch (err) {
