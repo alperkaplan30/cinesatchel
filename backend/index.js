@@ -13,6 +13,11 @@ mongoose
     .then(() => console.log("DB connected"))
     .catch((err) => console.log(err));
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 app.use(express.json());
 app.use("/api/videos", videoRoute)
 app.listen(process.env.PORT, () => {
