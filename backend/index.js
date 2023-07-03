@@ -14,7 +14,7 @@ mongoose
     .catch((err) => console.log(err));
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'https://cinesatchel-demo.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   res.header('Access-Control-Allow-Credentials', true);
   next();
