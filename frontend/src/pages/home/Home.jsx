@@ -16,7 +16,7 @@ const Home = ({ format }) => {
   useEffect(()=>{
     const getVideoList = async () => {
       try {
-        const res = await axios.get(`api/videos/${format ? "?format=" + format : ""}${format && category ? "&category=" + category : ""}`);
+        const res = await axios.get(process.env.REACT_APP_API_KEY + `api/videos/${format ? "?format=" + format : ""}${format && category ? "&category=" + category : ""}`);
         //console.log(res);
         setVideoList(res.data);
       } catch (err) {
@@ -26,7 +26,7 @@ const Home = ({ format }) => {
     const getSearchFeed = async () => {
       if (term !== null && term !== "") {
         try {
-          const res = await axios.get(`api/videos/search/${term ? "?term=" + term : ""}`);
+          const res = await axios.get(process.env.REACT_APP_API_KEY + `api/videos/search/${term ? "?term=" + term : ""}`);
           //console.log(res);
           setSearchFeed(res.data);
         } catch (err) {
@@ -36,7 +36,7 @@ const Home = ({ format }) => {
     };
     const getPopular = async () => {
       try {
-        const res = await axios.get(`api/videos/popular`);
+        const res = await axios.get(process.env.REACT_APP_API_KEY + `api/videos/popular`);
         //console.log(res);
         setPopular(res.data);
       } catch (err) {
