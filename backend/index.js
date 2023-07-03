@@ -26,3 +26,4 @@ app.use("/api/videos", videoRoute)
 app.listen(process.env.PORT, () => {
     console.log("Backend server started");
 });
+
