@@ -25,7 +25,7 @@ export default function VideoCard({ item, index }) {
   useEffect(() => {
     const getVideo = async () => {
       try {
-        const res = await axios.get("api/videos/find/" + item)
+        const res = await axios.get(process.env.REACT_APP_API_KEY + "api/videos/find/" + item)
         //console.log(res)
         setVideo(res.data);
       } catch (err) {
