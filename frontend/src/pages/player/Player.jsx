@@ -13,7 +13,11 @@ export default function Player() {
   const handlePlay = async () => {
     if (!played) {
       try {
-        await axios.put(process.env.REACT_APP_API_KEY + `api/videos/${video._id}`, { playcount: video.playcount + 1 })
+        await axios.put(`${process.env.REACT_API_KEY}api/videos/${video._id}`, { playcount: video.playcount + 1 }, {
+          headers: { 
+            token: "Bearer "+JSON.parse(localStorage.getItem("user")).accessToken, 
+          }
+        })
         setPlayed(true);
       } catch  (err) {
         console.log(err);
