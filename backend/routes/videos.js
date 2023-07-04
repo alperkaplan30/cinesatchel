@@ -1,20 +1,25 @@
 const router = require("express").Router();
 const Video = require("../models/Video");
-const returnMessage = require("../functions/returnMassage");
+const verifyToken = require("../functions/verifyToken");
+const returnMessage = require("../functions/returnMessage");
 
 // Add Video
-router.post("/", async (req, res) => {
-    const newVideo = new Video(req.body);
-    try {
-        const video = await newVideo.save();
-        returnMessage(res, 201, video);
-    } catch (err) {
-        returnMessage(res, 400, err);
+router.post("/", verifyToken, async (req, res) => {
+    if (req.user.isAdmin) {
+        const newVideo = new Video(req.body);
+        try {
+            const video = await newVideo.save();
+            returnMessage(res, 201, video);
+        } catch (err) {
+            returnMessage(res, 400, err);
+        }
+    } else {
+        returnMessage(res, 403, "You are not allowed");
     }
 });
 
 // Get Video
-router.get("/find/:videoid", async (req, res) => {
+router.get("/find/:videoid", verifyToken, async (req, res) => {
     try {
         const video = await Video.findById(req.params.videoid);
         if (video.ratings.length > 0) {
@@ -29,7 +34,7 @@ router.get("/find/:videoid", async (req, res) => {
 });
 
 // Update Video
-router.put("/:videoid", async (req, res) => {
+router.put("/:videoid", verifyToken, async (req, res) => {
     try {
         const video = await Video.findByIdAndUpdate(req.params.videoid, 
             { $set: req.body, }, { new: true });
@@ -40,7 +45,7 @@ router.put("/:videoid", async (req, res) => {
 });
 
 // Delete Video
-router.delete("/:videoid", async (req, res) => {
+router.delete("/:videoid", verifyToken, async (req, res) => {
     if (req.user.isAdmin) {
         try {
             await Video.findByIdAndDelete(req.params.videoid);
@@ -54,7 +59,7 @@ router.delete("/:videoid", async (req, res) => {
 });
 
 // Get All Videos
-router.get("/allvideos", async (req, res) => {
+router.get("/allvideos", verifyToken, async (req, res) => {
     if (req.user.isAdmin) {
       try {
         const videos = await Video.find();
@@ -68,7 +73,7 @@ router.get("/allvideos", async (req, res) => {
   });
 
 // Get Videos by Format or Category
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
     const formatQuery = req.query.format;
     const categoryQuery = req.query.category;
     let videos = [];
@@ -100,7 +105,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get Top10
-router.get("/popular", async (req, res) => {
+router.get("/popular", verifyToken, async (req, res) => {
     let videos = [];
     try {
         await Video.find().sort({ "playcount": -1 }).limit(6).then(docs => {
@@ -113,7 +118,7 @@ router.get("/popular", async (req, res) => {
 });
 
 // Get by Search
-router.get("/search", async (req, res) => {
+router.get("/search", verifyToken, async (req, res) => {
     const termQuery = req.query.term;
     let videos = [];
     try {
@@ -128,7 +133,7 @@ router.get("/search", async (req, res) => {
 });
 
 // Get Total Movie
-router.get("/moviesStats", async (req, res) => {
+router.get("/moviesStats", verifyToken, async (req, res) => {
     try {
         const data = await Video.aggregate([
             { $match: { "format": "Movie" } },
@@ -141,7 +146,7 @@ router.get("/moviesStats", async (req, res) => {
 });
 
 // Get Total Series
-router.get("/seriesStats", async (req, res) => {
+router.get("/seriesStats", verifyToken, async (req, res) => {
     try {
         const data = await Video.aggregate([
             { $match: { "format": "Series" } },
@@ -154,7 +159,7 @@ router.get("/seriesStats", async (req, res) => {
 });
 
 // Get Similars
-router.get("/find/:videoid/similars", async (req, res) => {
+router.get("/find/:videoid/similars", verifyToken, async (req, res) => {
     let videos = [];
     let data;
     try {
@@ -177,7 +182,7 @@ router.get("/find/:videoid/similars", async (req, res) => {
 });
 
 // Add Rating
-router.put("/rate/:videoid", async (req, res) => {
+router.put("/rate/:videoid", verifyToken, async (req, res) => {
     const profile = req.body.ratings[0].ratedby;
     try {
         let video = await Video.findById(req.params.videoid);
