@@ -10,6 +10,7 @@ export default function VideoCard({ item, index }) {
   const [video, setVideo] = useState({});
   const [modal, setModal] = useState(false);
   const [trailer, setTrailer] = useState(false);
+  const profile = JSON.parse(localStorage.getItem("user")).selectedprofile;
  
   const toggleModal = () => {
     setModal(!modal);
@@ -25,7 +26,11 @@ export default function VideoCard({ item, index }) {
   useEffect(() => {
     const getVideo = async () => {
       try {
-        const res = await axios.get(process.env.REACT_APP_API_KEY + "api/videos/find/" + item)
+        const res = await axios.get(`${process.env.REACT_API_KEY}api/videos/find/` + item, {
+          headers: { 
+            token: "Bearer "+JSON.parse(localStorage.getItem("user")).accessToken, 
+          }
+        });
         //console.log(res)
         setVideo(res.data);
       } catch (err) {
@@ -34,6 +39,20 @@ export default function VideoCard({ item, index }) {
     };
     getVideo();
   }, [item]);
+
+  const handleRating = async (e) => {
+    e.preventDefault();
+    const selectedRating = e.target.value;
+    try {
+      await axios.put(`${process.env.REACT_API_KEY}api/videos/rate/${item}`, { ratings: [{ ratedby: profile, rate: selectedRating  }] }, {
+        headers: { 
+          token: "Bearer "+JSON.parse(localStorage.getItem("user")).accessToken, 
+        }
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <div className="videoCard" style={{ backgroundImage: `url(${video.thumbnail})` }}>
@@ -82,6 +101,28 @@ export default function VideoCard({ item, index }) {
                     <label>{video.limits}</label>
                     <label>Rating</label>
                     <label>{video.puan}</label>
+                  </div>
+                  <hr />
+                  <div className="trailerNrating">
+                    <Link to="/player" state={{ video, trailer }} >
+                      <button className="trailerBtn">Watch Trailer</button>
+                    </Link>
+                    <select 
+                      name="rating"
+                      id="rating"
+                      onChange={handleRating}
+                    >
+                      <option>Rate This {video.format}</option>
+                      <option value="10">10</option>
+                      <option value="9">9</option>
+                      <option value="7">7</option>
+                      <option value="6">6</option>
+                      <option value="5">5</option>
+                      <option value="4">4</option>
+                      <option value="3">3</option>
+                      <option value="2">2</option>
+                      <option value="1">1</option>
+                    </select>
                   </div>
                   <div className="relatedVideos">
                     {video.format && (
