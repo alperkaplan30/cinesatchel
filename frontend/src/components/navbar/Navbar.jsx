@@ -1,12 +1,18 @@
 import "./navbar.scss"
 import logo from "../../utils/logo.png"
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SearchBar from "../searchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext/AuthContext";
+import { logout } from "../../context/authContext/AuthActions";
+import axios from "axios";
 
 const Navbar = ({ format, setCategory, setTerm }) => {
     const navigate = useNavigate();
     const [isScrolled, setIsScrolled] = useState(false);
+    const { dispatch } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+    const [profile, setProfile] = useState({});
  
     window.onscroll = () => {
         setIsScrolled(window.ScrollY === 0 ? false : true);
@@ -25,9 +31,51 @@ const Navbar = ({ format, setCategory, setTerm }) => {
     const navigateToMyLists = () => {
         navigate('/myLists')
     }
+    const navigateToAccountDetails = () => {
+        navigate('/accountDetails')
+    }
+    const navigateToProfiles = () => {
+        navigate('/profiles')
+    }
+    const navigateToAdminPanel = () => {
+        navigate('/dashboard')
+    }
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.put(`${process.env.REACT_API_KEY}api/users/${JSON.parse(localStorage.getItem("user"))._id}
+            /profiles`, { selectedprofile: null }, {
+              headers: { 
+                token: "Bearer "+JSON.parse(localStorage.getItem("user")).accessToken, 
+              }
+            });
+            dispatch(logout());
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     
-
-
+    useEffect(() => {
+        if (JSON.parse(localStorage.getItem("user")).selectedprofile !== null) {
+            const getProfile = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_API_KEY}api/users/find/${JSON.parse(localStorage.getItem("user"))._id}
+                /profiles/find/` + JSON.parse(localStorage.getItem("user")).selectedprofile, {
+                headers: { 
+                    token: "Bearer "+JSON.parse(localStorage.getItem("user")).accessToken, 
+                }
+                });
+                //console.log(profile)
+                setProfile(res.data);
+            } catch (err) {
+                console.log(err);
+            }
+            };
+            getProfile();
+        }
+    }, [user]);
     
   return (
     <div className={isScrolled ? "navbar scrolled" : "navbar"}>
@@ -63,16 +111,22 @@ const Navbar = ({ format, setCategory, setTerm }) => {
                     <option value="Thriller">Thriller</option>
                 </select>
             )}
+            {user.isAdmin && !format && (
+                <button className="adminPanelButton" onClick={navigateToAdminPanel}>Admin Panel</button>
+            )}
             {!format && (
                 <SearchBar setTerm={setTerm} />
             )}
             <div className="account">
-                    <span>profilename</span>
-               
+                {user.isAdmin ? (
+                    <span>Admin</span>
+                ) : (
+                    <span>{profile.profilename}</span>
+                )}
                 <div className="options">
-                    <span>Account Details</span>
-                    <span>Profiles</span>
-                    <span>Logout</span>
+                    <span onClick={navigateToAccountDetails}>Account Details</span>
+                    <span onClick={navigateToProfiles}>Profiles</span>
+                    <span onClick={handleLogout}>Logout</span>
                 </div>
             </div>
         </div>
@@ -80,4 +134,4 @@ const Navbar = ({ format, setCategory, setTerm }) => {
   )
 }
 
-export default Navbar
+export default Navbar;
